@@ -369,10 +369,26 @@ class Gallery {
         this.currentProduct = null;
         this.currentImageIndex = 0;
         this.modal = null;
+        this.modalElement = null;
     }
 
     init() {
-        this.modal = new bootstrap.Modal(document.getElementById('imageModal'));
+        this.modalElement = document.getElementById('imageModal');
+        this.modal = new bootstrap.Modal(this.modalElement);
+        
+        // Add event listener for modal hidden event
+        this.modalElement.addEventListener('hidden.bs.modal', () => {
+            // Remove any lingering backdrop
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+            // Remove modal-open class from body
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        });
+
         this.setupEventListeners();
     }
 
@@ -400,6 +416,13 @@ class Gallery {
         this.currentProduct = product;
         this.currentImageIndex = 0;
         this.updateGallery();
+        
+        // Ensure any existing backdrop is removed before showing
+        const existingBackdrop = document.querySelector('.modal-backdrop');
+        if (existingBackdrop) {
+            existingBackdrop.remove();
+        }
+        
         this.modal.show();
     }
 
