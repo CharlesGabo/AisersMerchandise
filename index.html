@@ -241,9 +241,21 @@
                                 <input class="form-check-input" type="radio" name="paymentMode" id="cashPayment" value="Cash" required>
                                 <label class="form-check-label" for="cashPayment">Cash</label>
                             </div>
+                            <div id="cashMessage" class="text-muted small" style="display:none; color:#dc3545; margin-bottom:10px;">
+                                Please visit the office to proceed with the payment.
+                            </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="paymentMode" id="gcashPayment" value="Gcash" required>
                                 <label class="form-check-label" for="gcashPayment">Gcash</label>
+                            </div>
+                            <div id="gcashDetails" class="form-text" style="display:none; margin-top:10px; padding:15px; background-color:#f8f9fa; border-radius:5px;">
+                                <p class="mb-2"><strong>GCash Payment Instructions:</strong></p>
+                                <p class="mb-2">1. Send payment to GCash number: <strong>09XX XXX XXXX</strong></p>
+                                <p class="mb-2">2. After payment, enter your GCash reference number below:</p>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control" id="gcashReference" placeholder="Enter GCash Reference Number" required>
+                                </div>
+                                <p class="text-muted small">Note: Your order will be verified before claiming the item. Please keep your GCash receipt for reference.</p>
                             </div>
                         </div>
                     </form>

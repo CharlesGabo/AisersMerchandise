@@ -135,12 +135,53 @@ class ShoppingCart {
             return;
         }
 
+        const paymentMode = document.querySelector('input[name="paymentMode"]:checked').value;
+        const gcashReference = document.getElementById('gcashReference').value;
+
+        // If GCash is selected, verify the reference number
+        if (paymentMode === 'Gcash' && gcashReference) {
+            // Show loading state
+            const confirmButton = document.getElementById('confirm-checkout');
+            const originalText = confirmButton.textContent;
+            confirmButton.disabled = true;
+            confirmButton.textContent = 'Verifying Payment...';
+
+            try {
+                // Here you would typically make an API call to verify the GCash payment
+                // For now, we'll simulate a verification delay
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                // Simulate verification (replace this with actual verification logic)
+                const isVerified = true; // This should come from your actual verification system
+
+                if (!isVerified) {
+                    throw new Error('Payment verification failed. Please check your reference number and try again.');
+                }
+
+                // If verification is successful, proceed with the order
+                await this.submitOrder(form);
+                
+            } catch (error) {
+                console.error('Payment verification error:', error);
+                this.showNotification(error.message || 'Payment verification failed. Please try again.');
+                confirmButton.disabled = false;
+                confirmButton.textContent = originalText;
+                return;
+            }
+        } else {
+            // For cash payments, proceed directly
+            await this.submitOrder(form);
+        }
+    }
+
+    async submitOrder(form) {
         const formData = {
             studentNumber: document.getElementById('studentNumber').value,
             studentName: document.getElementById('studentName').value,
             section: document.getElementById('section').value,
             email: document.getElementById('email').value,
             paymentMode: document.querySelector('input[name="paymentMode"]:checked').value,
+            gcashReference: document.getElementById('gcashReference').value,
             items: this.items.map(item => `${item.name} (${item.quantity}x)`).join(', '),
             total: this.getTotal().toFixed(2),
             orderDate: new Date().toLocaleString()
@@ -159,14 +200,15 @@ class ShoppingCart {
                 'entry.859203702': formData.items,            // Order Items
                 'entry.494570708': formData.total,            // Total Amount
                 'entry.735505920': formData.orderDate,        // Order Date
-                'entry.308295728': formData.paymentMode       // Payment Mode
+                'entry.308295728': formData.paymentMode,      // Payment Mode
+                'entry.123456789': formData.gcashReference    // GCash Reference (add this entry ID to your Google Form)
             };
 
             // Create a hidden form
             const submitForm = document.createElement('form');
             submitForm.method = 'POST';
             submitForm.action = submitUrl;
-            submitForm.target = '_blank'; // Open in new tab to avoid redirecting user
+            submitForm.target = '_blank';
 
             for (const [key, value] of Object.entries(formFields)) {
                 const input = document.createElement('input');
@@ -195,6 +237,11 @@ class ShoppingCart {
             // Reset form
             form.reset();
 
+            // Reset confirm button
+            const confirmButton = document.getElementById('confirm-checkout');
+            confirmButton.disabled = false;
+            confirmButton.textContent = 'Confirm Order';
+
             // Clean up
             setTimeout(() => {
                 document.body.removeChild(submitForm);
@@ -203,6 +250,11 @@ class ShoppingCart {
         } catch (error) {
             console.error('Error submitting order:', error);
             this.showNotification('There was an error processing your order. Please try again.');
+            
+            // Reset confirm button
+            const confirmButton = document.getElementById('confirm-checkout');
+            confirmButton.disabled = false;
+            confirmButton.textContent = 'Confirm Order';
         }
     }
 }
@@ -340,4 +392,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize cart count
     cart.updateCartIcon();
+
+    // Show/hide cash message based on payment mode
+    const cashRadio = document.getElementById('cashPayment');
+    const gcashRadio = document.getElementById('gcashPayment');
+    const cashMessage = document.getElementById('cashMessage');
+    const gcashDetails = document.getElementById('gcashDetails');
+    const gcashReference = document.getElementById('gcashReference');
+
+    if (cashRadio && gcashRadio && cashMessage && gcashDetails) {
+        function updatePaymentDetails() {
+            if (cashRadio.checked) {
+                cashMessage.style.display = 'block';
+                gcashDetails.style.display = 'none';
+                gcashReference.required = false;
+            } else {
+                cashMessage.style.display = 'none';
+                gcashDetails.style.display = 'block';
+                gcashReference.required = true;
+            }
+        }
+        cashRadio.addEventListener('change', updatePaymentDetails);
+        gcashRadio.addEventListener('change', updatePaymentDetails);
+        updatePaymentDetails(); // Set initial state
+    }
 }); 
