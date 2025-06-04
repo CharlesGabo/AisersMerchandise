@@ -184,7 +184,8 @@ class ShoppingCart {
             paymentMode: document.querySelector('input[name="paymentMode"]:checked').value,
             gcashReference: document.getElementById('gcashReference').value,
             items: this.items.map(item => `${item.name} (${item.quantity}x)`).join(', '),
-            total: this.getTotal().toFixed(2)
+            total: this.getTotal().toFixed(2),
+            orderDate: new Date().toLocaleString()
         };
 
         try {
@@ -199,14 +200,16 @@ class ShoppingCart {
                 'entry.135040288': formData.email,            // Email
                 'entry.859203702': formData.items,            // Order Items
                 'entry.494570708': formData.total,            // Total Amount
+                'entry.735505920': formData.orderDate,        // Order Date
                 'entry.308295728': formData.paymentMode,      // Payment Mode
-                'entry.735505920': formData.gcashReference    // GCash Reference (update this entry ID to match your Google Form)
+                'entry.123456789': formData.gcashReference    // GCash Reference (add this entry ID to your Google Form)
             };
 
             // Create a hidden form
             const submitForm = document.createElement('form');
             submitForm.method = 'POST';
             submitForm.action = submitUrl;
+            submitForm.target = '_blank';
 
             for (const [key, value] of Object.entries(formFields)) {
                 const input = document.createElement('input');
