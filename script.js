@@ -24,6 +24,7 @@ class ShoppingCart {
         this.saveCart();
         this.updateCartIcon();
         this.showNotification('Item removed from cart!');
+        this.renderCart();
     }
 
     updateQuantity(productId, quantity) {
@@ -78,11 +79,11 @@ class ShoppingCart {
                 <img src="${item.image}" alt="${item.name}">
                 <div class="cart-item-details">
                     <h6>${item.name}</h6>
-                    <p>$${item.price.toFixed(2)}</p>
+                    <p>₱${item.price.toFixed(2)}</p>
                     <div class="cart-item-quantity">
-                        <button class="btn btn-sm btn-outline-secondary" onclick="cart.updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
+                        <button class="btn btn-sm btn-outline-secondary cart-qty-btn" data-action="decrement" data-id="${item.id}">-</button>
                         <span>${item.quantity}</span>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="cart.updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+                        <button class="btn btn-sm btn-outline-secondary cart-qty-btn" data-action="increment" data-id="${item.id}">+</button>
                     </div>
                 </div>
                 <button class="btn btn-sm btn-danger" onclick="cart.removeItem(${item.id})">
@@ -92,6 +93,22 @@ class ShoppingCart {
         `).join('');
 
         cartTotal.textContent = this.getTotal().toFixed(2);
+
+        // Add event listeners for quantity buttons
+        cartItems.querySelectorAll('.cart-qty-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = parseInt(btn.getAttribute('data-id'));
+                const action = btn.getAttribute('data-action');
+                const item = this.items.find(i => i.id === id);
+                if (!item) return;
+                if (action === 'increment') {
+                    this.updateQuantity(id, item.quantity + 1);
+                } else if (action === 'decrement') {
+                    this.updateQuantity(id, item.quantity - 1);
+                }
+                this.renderCart(); // Re-render to update UI
+            });
+        });
     }
 
     checkout() {
@@ -192,26 +209,80 @@ class ShoppingCart {
 
 // Product Data
 const products = [
+    // V1 Collection
     {
         id: 1,
-        name: 'Organization T-Shirt',
-        price: 24.99,
+        name: 'V1.1 T-Shirt',
+        price: 350.00,
         image: 'https://via.placeholder.com/300x200',
-        description: 'Premium quality t-shirt with our organization\'s logo.'
+        description: 'Premium quality t-shirt with our organization\'s V1.1 design.',
+        category: 'V1'
     },
     {
         id: 2,
-        name: 'Organization Hoodie',
-        price: 39.99,
+        name: 'V1.2 T-Shirt',
+        price: 350.00,
         image: 'https://via.placeholder.com/300x200',
-        description: 'Comfortable hoodie perfect for any occasion.'
+        description: 'Premium quality t-shirt with our organization\'s V1.2 design.',
+        category: 'V1'
     },
+    // V2 Collection
     {
         id: 3,
-        name: 'Organization Cap',
-        price: 19.99,
+        name: 'V2.1 T-Shirt',
+        price: 400.00,
         image: 'https://via.placeholder.com/300x200',
-        description: 'Stylish cap with embroidered logo.'
+        description: 'Premium quality t-shirt with our organization\'s V2.1 design.',
+        category: 'V2'
+    },
+    {
+        id: 4,
+        name: 'V2.2 T-Shirt',
+        price: 350.00,
+        image: 'https://via.placeholder.com/300x200',
+        description: 'Premium quality t-shirt with our organization\'s V2.2 design.',
+        category: 'V2'
+    },
+    // Stickers Collection
+    {
+        id: 5,
+        name: 'Hirono Uniform Sticker',
+        price: 30.00,
+        image: 'https://via.placeholder.com/300x200',
+        description: 'High-quality vinyl sticker featuring the Hirono Uniform design.',
+        category: 'Stickers'
+    },
+    {
+        id: 6,
+        name: 'Hirono Airplane Sticker',
+        price: 30.00,
+        image: 'https://via.placeholder.com/300x200',
+        description: 'High-quality vinyl sticker featuring the Hirono Airplane design.',
+        category: 'Stickers'
+    },
+    {
+        id: 7,
+        name: 'Hirono Computer Enthusiasts Sticker',
+        price: 30.00,
+        image: 'https://via.placeholder.com/300x200',
+        description: 'High-quality vinyl sticker featuring the Hirono Computer Enthusiasts design.',
+        category: 'Stickers'
+    },
+    {
+        id: 8,
+        name: 'Sticker Set A',
+        price: 80.00,
+        image: 'https://via.placeholder.com/300x200',
+        description: 'Collection of our most popular sticker designs in one set.',
+        category: 'Stickers'
+    },
+    {
+        id: 9,
+        name: 'Sticker Set B',
+        price: 100.00,
+        image: 'https://via.placeholder.com/300x200',
+        description: 'Collection of our exclusive sticker designs in one set.',
+        category: 'Stickers'
     }
 ];
 
@@ -256,10 +327,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Add event listeners to add to cart buttons
-    document.querySelectorAll('.card .btn-primary').forEach((button, index) => {
+    document.querySelectorAll('.card .btn-primary').forEach((button) => {
         button.addEventListener('click', () => {
-            cart.addItem(products[index]);
-            cart.renderCart(); // Update cart modal if it's open
+            const productId = parseInt(button.getAttribute('data-product-id'));
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                cart.addItem(product);
+                cart.renderCart(); // Update cart modal if it's open
+            }
         });
     });
 

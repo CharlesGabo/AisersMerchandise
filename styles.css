@@ -70,6 +70,10 @@ h2, h3, h4, h5, h6 {
     transition: transform 0.3s ease;
     border: 2px solid var(--gold-dark);
     box-shadow: 0 4px 12px #00000011;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
 }
 
 .card:hover {
@@ -77,8 +81,19 @@ h2, h3, h4, h5, h6 {
 }
 
 .card-img-top {
-    height: 200px;
+    height: 140px;
     object-fit: cover;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    justify-content: space-between;
+}
+
+.card .btn {
+    margin-top: auto;
 }
 
 .price {
