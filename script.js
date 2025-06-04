@@ -207,7 +207,6 @@ class ShoppingCart {
             const submitForm = document.createElement('form');
             submitForm.method = 'POST';
             submitForm.action = submitUrl;
-            submitForm.target = '_blank';
 
             for (const [key, value] of Object.entries(formFields)) {
                 const input = document.createElement('input');
