@@ -203,22 +203,20 @@ class ShoppingCart {
                 'entry.735505920': formData.gcashReference    // GCash Reference (update this entry ID to match your Google Form)
             };
 
-            // Create a hidden form
-            const submitForm = document.createElement('form');
-            submitForm.method = 'POST';
-            submitForm.action = submitUrl;
-            submitForm.target = '_blank';
+            // Build form body for x-www-form-urlencoded
+            const body = Object.entries(formFields)
+                .map(([key, value]) => encodeURIComponent(key) + '=' + encodeURIComponent(value))
+                .join('&');
 
-            for (const [key, value] of Object.entries(formFields)) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = value;
-                submitForm.appendChild(input);
-            }
-
-            document.body.appendChild(submitForm);
-            submitForm.submit();
+            // Submit via fetch (AJAX)
+            const response = await fetch(submitUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: body,
+                mode: 'no-cors' // Google Forms does not support CORS, so we use no-cors
+            });
 
             // Show success message
             this.showNotification('Thank you for your purchase! Your order has been received.');
@@ -240,11 +238,6 @@ class ShoppingCart {
             const confirmButton = document.getElementById('confirm-checkout');
             confirmButton.disabled = false;
             confirmButton.textContent = 'Confirm Order';
-
-            // Clean up
-            setTimeout(() => {
-                document.body.removeChild(submitForm);
-            }, 1000);
 
         } catch (error) {
             console.error('Error submitting order:', error);
