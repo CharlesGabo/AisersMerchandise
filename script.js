@@ -330,7 +330,11 @@ const products = [
         id: 6,
         name: 'Hirono Airplane Sticker',
         price: 30.00,
-        image: 'https://via.placeholder.com/300x200',
+        image: 'Photos/hirono-airplane.jfif',
+        gallery: [
+            'Photos/hirono-airplane-closeup.jpg',  // Add close-up view
+            'Photos/hirono-uniform-applied.jpg'   // Add applied view
+        ],
         description: 'High-quality vinyl sticker featuring the Hirono Airplane design.',
         category: 'Stickers'
     },
@@ -338,7 +342,11 @@ const products = [
         id: 7,
         name: 'Hirono Computer Enthusiasts Sticker',
         price: 30.00,
-        image: 'https://via.placeholder.com/300x200',
+        image: 'Photos/computer-enthusiast.jfif',
+        gallery: [
+            'Photos/hirono-computer-enthusiasts-closeup.jpg',  // Add close-up view
+            'Photos/hirono-computer-enthusiasts-applied.jpg'   // Add applied view
+        ],
         description: 'High-quality vinyl sticker featuring the Hirono Computer Enthusiasts design.',
         category: 'Stickers'
     },
@@ -346,7 +354,7 @@ const products = [
         id: 8,
         name: 'Sticker Set A',
         price: 80.00,
-        image: 'https://via.placeholder.com/300x200',
+        image: 'Photos/set-a.png',
         description: 'Collection of our most popular sticker designs in one set.',
         category: 'Stickers'
     },
@@ -354,7 +362,7 @@ const products = [
         id: 9,
         name: 'Sticker Set B',
         price: 100.00,
-        image: 'https://via.placeholder.com/300x200',
+        image: 'Photos/set-b.jfif',
         description: 'Collection of our exclusive sticker designs in one set.',
         category: 'Stickers'
     }

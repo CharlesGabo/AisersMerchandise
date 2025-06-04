@@ -407,4 +407,14 @@ footer {
         border-left: none;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
+}
+
+.sticker-set-b-img {
+    object-fit: cover;
+    height: 220px;
+}
+
+.sticker-set-a-img {
+    object-fit: cover;
+    height: 220px;
 } 
