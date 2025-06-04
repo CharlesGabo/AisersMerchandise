@@ -417,4 +417,15 @@ footer {
 .sticker-set-a-img {
     object-fit: cover;
     height: 220px;
+}
+
+/* Cart item number styling for cart modal */
+.cart-item-number {
+    min-width: 2em;
+    text-align: right;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-right: 18px; /* Increased from 10px to 18px for more space */
+    margin-left: -8px;  /* Move number a bit more to the left */
+    color: #222;
 } 

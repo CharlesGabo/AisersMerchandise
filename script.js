@@ -74,8 +74,9 @@ class ShoppingCart {
         
         if (!cartItems) return;
 
-        cartItems.innerHTML = this.items.map(item => `
-            <div class="cart-item" data-id="${item.id}">
+        cartItems.innerHTML = this.items.map((item, idx) => `
+            <div class="cart-item d-flex align-items-center" data-id="${item.id}">
+                <div class="cart-item-number" style="min-width: 2em; text-align: right; font-weight: bold; font-size: 1.1em; margin-right: 10px;">${idx + 1}.</div>
                 <img src="${item.image}" alt="${item.name}">
                 <div class="cart-item-details">
                     <h6>${item.name}</h6>
