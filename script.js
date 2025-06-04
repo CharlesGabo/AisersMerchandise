@@ -124,36 +124,69 @@ class ShoppingCart {
             section: document.getElementById('section').value,
             email: document.getElementById('email').value,
             paymentMode: document.querySelector('input[name="paymentMode"]:checked').value,
-            gcashNumber: document.getElementById('gcashNumber').value,
-            items: this.items,
-            total: this.getTotal()
+            items: this.items.map(item => `${item.name} (${item.quantity}x)`).join(', '),
+            total: this.getTotal().toFixed(2),
+            orderDate: new Date().toLocaleString()
         };
 
-        // Validate GCash number if GCash is selected
-        if (formData.paymentMode === 'gcash' && !formData.gcashNumber.match(/^[0-9]{11}$/)) {
-            this.showNotification('Please enter a valid 11-digit GCash number');
-            return;
+        try {
+            // Replace with your actual Google Form formResponse URL
+            const submitUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSe4grnNLFBLZ-1toQsjUpBdMGZCT6iXo25Qr5_NGm6ma174Vw/formResponse';
+
+            // Map your form fields to Google Form entry IDs
+            const formFields = {
+                'entry.1011423076': formData.studentNumber,   // Student Number
+                'entry.84552753': formData.studentName,       // Student Name
+                'entry.964847782': formData.section,          // Section
+                'entry.135040288': formData.email,            // Email
+                'entry.859203702': formData.items,            // Order Items
+                'entry.494570708': formData.total,            // Total Amount
+                'entry.735505920': formData.orderDate,        // Order Date
+                'entry.308295728': formData.paymentMode       // Payment Mode
+            };
+
+            // Create a hidden form
+            const submitForm = document.createElement('form');
+            submitForm.method = 'POST';
+            submitForm.action = submitUrl;
+            submitForm.target = '_blank'; // Open in new tab to avoid redirecting user
+
+            for (const [key, value] of Object.entries(formFields)) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = value;
+                submitForm.appendChild(input);
+            }
+
+            document.body.appendChild(submitForm);
+            submitForm.submit();
+
+            // Show success message
+            this.showNotification('Thank you for your purchase! Your order has been received.');
+            
+            // Clear cart and close modal
+            this.items = [];
+            this.saveCart();
+            this.updateCartIcon();
+            this.renderCart();
+            
+            if (this.checkoutModal) {
+                this.checkoutModal.hide();
+            }
+
+            // Reset form
+            form.reset();
+
+            // Clean up
+            setTimeout(() => {
+                document.body.removeChild(submitForm);
+            }, 1000);
+
+        } catch (error) {
+            console.error('Error submitting order:', error);
+            this.showNotification('There was an error processing your order. Please try again.');
         }
-
-        // Here you would typically send this data to your backend
-        console.log('Order details:', formData);
-
-        // Show success message
-        this.showNotification('Thank you for your purchase! Your order has been received.');
-        
-        // Clear cart and close modal
-        this.items = [];
-        this.saveCart();
-        this.updateCartIcon();
-        this.renderCart();
-        
-        if (this.checkoutModal) {
-            this.checkoutModal.hide();
-        }
-
-        // Reset form
-        form.reset();
-        document.getElementById('gcashDetails').classList.add('d-none');
     }
 }
 
@@ -215,20 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkoutBtn = document.getElementById('checkout-btn');
     checkoutBtn.addEventListener('click', () => {
         cart.checkout();
-    });
-
-    // Handle payment mode selection
-    document.querySelectorAll('input[name="paymentMode"]').forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            const gcashDetails = document.getElementById('gcashDetails');
-            if (e.target.value === 'gcash') {
-                gcashDetails.classList.remove('d-none');
-                document.getElementById('gcashNumber').required = true;
-            } else {
-                gcashDetails.classList.add('d-none');
-                document.getElementById('gcashNumber').required = false;
-            }
-        });
     });
 
     // Handle checkout confirmation
