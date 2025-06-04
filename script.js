@@ -266,16 +266,25 @@ const products = [
         id: 1,
         name: 'V1.1 T-Shirt',
         price: 350.00,
-        image: 'https://via.placeholder.com/300x200',
-        description: 'Premium quality t-shirt with our organization\'s V1.1 design.',
+        image: 'Photos/v1-1-main.jpg',  // You can add your main image here
+        gallery: [
+            'Photos/v1-1-front.jpg',    // Add front view
+            'Photos/v1-1-back.jpg',     // Add back view
+            'Photos/v1-1-detail.jpg'    // Add detail view
+        ],
+        description: 'Premium quality t-shirt with our organization\'s V1.1 design. Features a comfortable fit and durable material.',
         category: 'V1'
     },
     {
         id: 2,
         name: 'V1.2 T-Shirt',
         price: 350.00,
-        image: 'https://via.placeholder.com/300x200',
-        description: 'Premium quality t-shirt with our organization\'s V1.2 design.',
+        image: 'Photos/v1-2-main.jpg',  // You can add your main image here
+        gallery: [
+            'Photos/v1-2-front.jpg',    // Add front view
+            'Photos/v1-2-back.jpg'      // Add back view
+        ],
+        description: 'Premium quality t-shirt with our organization\'s V1.2 design. Perfect for everyday wear.',
         category: 'V1'
     },
     // V2 Collection
@@ -283,7 +292,12 @@ const products = [
         id: 3,
         name: 'V2.1 T-Shirt',
         price: 400.00,
-        image: 'https://via.placeholder.com/300x200',
+        image: 'Photos/v2-1-main.jpg',  // You can add your main image here
+        gallery: [
+            'Photos/v2-1-front.jpg',    // Add front view
+            'Photos/v2-1-back.jpg',     // Add back view
+            'Photos/v2-1-detail.jpg'    // Add detail view
+        ],
         description: 'Premium quality t-shirt with our organization\'s V2.1 design.',
         category: 'V2'
     },
@@ -291,7 +305,11 @@ const products = [
         id: 4,
         name: 'V2.2 T-Shirt',
         price: 350.00,
-        image: 'https://via.placeholder.com/300x200',
+        image: 'Photos/v2-2-main.jpg',  // You can add your main image here
+        gallery: [
+            'Photos/v2-2-front.jpg',    // Add front view
+            'Photos/v2-2-back.jpg'      // Add back view
+        ],
         description: 'Premium quality t-shirt with our organization\'s V2.2 design.',
         category: 'V2'
     },
@@ -300,7 +318,11 @@ const products = [
         id: 5,
         name: 'Hirono Uniform Sticker',
         price: 30.00,
-        image: 'https://via.placeholder.com/300x200',
+        image: 'Photos/hirono-uniform.jfif',  // Using your existing image
+        gallery: [
+            'Photos/hirono-uniform-closeup.jpg',  // Add close-up view
+            'Photos/hirono-uniform-applied.jpg'   // Add applied view
+        ],
         description: 'High-quality vinyl sticker featuring the Hirono Uniform design.',
         category: 'Stickers'
     },
@@ -341,6 +363,93 @@ const products = [
 // Initialize cart
 const cart = new ShoppingCart();
 
+// Gallery functionality
+class Gallery {
+    constructor() {
+        this.currentProduct = null;
+        this.currentImageIndex = 0;
+        this.modal = null;
+    }
+
+    init() {
+        this.modal = new bootstrap.Modal(document.getElementById('imageModal'));
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        // Previous button
+        document.getElementById('prevImage').addEventListener('click', () => this.navigate(-1));
+        
+        // Next button
+        document.getElementById('nextImage').addEventListener('click', () => this.navigate(1));
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (!this.modal._element.classList.contains('show')) return;
+            
+            if (e.key === 'ArrowLeft') this.navigate(-1);
+            if (e.key === 'ArrowRight') this.navigate(1);
+            if (e.key === 'Escape') this.modal.hide();
+        });
+    }
+
+    show(productId) {
+        const product = products.find(p => p.id === productId);
+        if (!product) return;
+
+        this.currentProduct = product;
+        this.currentImageIndex = 0;
+        this.updateGallery();
+        this.modal.show();
+    }
+
+    navigate(direction) {
+        if (!this.currentProduct) return;
+
+        const images = [this.currentProduct.image, ...(this.currentProduct.gallery || [])];
+        this.currentImageIndex = (this.currentImageIndex + direction + images.length) % images.length;
+        this.updateGallery();
+    }
+
+    updateGallery() {
+        if (!this.currentProduct) return;
+
+        const images = [this.currentProduct.image, ...(this.currentProduct.gallery || [])];
+        const fullSizeImg = document.getElementById('fullSizeImage');
+        const title = document.getElementById('galleryTitle');
+        const description = document.getElementById('galleryDescription');
+        const thumbnails = document.getElementById('galleryThumbnails');
+
+        // Update main image
+        fullSizeImg.src = images[this.currentImageIndex];
+
+        // Update title and description
+        title.textContent = this.currentProduct.name;
+        description.textContent = this.currentProduct.description;
+
+        // Update thumbnails
+        thumbnails.innerHTML = images.map((img, index) => `
+            <img src="${img}" 
+                 alt="Thumbnail ${index + 1}" 
+                 class="thumbnail ${index === this.currentImageIndex ? 'active' : ''}"
+                 onclick="gallery.showImage(${index})">
+        `).join('');
+
+        // Update navigation buttons visibility
+        document.getElementById('prevImage').style.display = images.length > 1 ? 'flex' : 'none';
+        document.getElementById('nextImage').style.display = images.length > 1 ? 'flex' : 'none';
+    }
+
+    showImage(index) {
+        if (!this.currentProduct) return;
+        this.currentImageIndex = index;
+        this.updateGallery();
+    }
+}
+
+// Initialize gallery
+const gallery = new Gallery();
+
 // Initialize the page
 document.addEventListener('DOMContentLoaded', () => {
     // Add cart icon to navbar
@@ -355,9 +464,26 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     navbarNav.appendChild(cartItem);
 
-    // Initialize modals (only once)
+    // Initialize modals
     cart.cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
     cart.checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
+    const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+
+    // Add image modal functionality
+    document.querySelectorAll('.card-img-top').forEach(img => {
+        img.addEventListener('click', () => {
+            const fullSizeImg = document.getElementById('fullSizeImage');
+            fullSizeImg.src = img.src;
+            imageModal.show();
+        });
+    });
+
+    // Close image modal when clicking on the image
+    document.getElementById('imageModal').addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal-body') || e.target.id === 'fullSizeImage') {
+            imageModal.hide();
+        }
+    });
 
     // Add cart modal functionality
     const cartIcon = document.getElementById('cart-icon');
@@ -416,4 +542,17 @@ document.addEventListener('DOMContentLoaded', () => {
         gcashRadio.addEventListener('change', updatePaymentDetails);
         updatePaymentDetails(); // Set initial state
     }
+
+    // Initialize gallery
+    gallery.init();
+
+    // Update image click handlers
+    document.querySelectorAll('.card').forEach(card => {
+        const img = card.querySelector('.card-img-top');
+        const productId = parseInt(card.querySelector('.btn-primary').getAttribute('data-product-id'));
+        
+        img.addEventListener('click', () => {
+            gallery.show(productId);
+        });
+    });
 }); 
