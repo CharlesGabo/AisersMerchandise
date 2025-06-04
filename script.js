@@ -200,9 +200,8 @@ class ShoppingCart {
                 'entry.135040288': formData.email,            // Email
                 'entry.859203702': formData.items,            // Order Items
                 'entry.494570708': formData.total,            // Total Amount
-                'entry.735505920': formData.orderDate,        // Order Date
-                'entry.308295728': formData.paymentMode,      // Payment Mode
-                'entry.123456789': formData.gcashReference    // GCash Reference (add this entry ID to your Google Form)
+                'entry.735505920': formData.gcashReference,   // GCash Reference Number (was Order Date)
+                'entry.308295728': formData.paymentMode       // Payment Mode
             };
 
             // Create a hidden form
