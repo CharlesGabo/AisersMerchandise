@@ -419,6 +419,11 @@ footer {
     height: 220px;
 }
 
+.shirt-img {
+    object-fit: cover;
+    height: 220px;
+}
+
 /* Cart item number styling for cart modal */
 .cart-item-number {
     min-width: 2em;

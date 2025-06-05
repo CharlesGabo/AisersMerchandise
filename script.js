@@ -258,7 +258,7 @@ const products = [
         id: 1,
         name: 'V1.1 T-Shirt',
         price: 350.00,
-        image: 'Photos/v1-1-main.jpg',  // You can add your main image here
+        image: 'Photos/V1.1.png',  // You can add your main image here
         gallery: [
             'Photos/v1-1-front.jpg',    // Add front view
             'Photos/v1-1-back.jpg',     // Add back view
@@ -271,7 +271,7 @@ const products = [
         id: 2,
         name: 'V1.2 T-Shirt',
         price: 350.00,
-        image: 'Photos/v1-2-main.jpg',  // You can add your main image here
+        image: 'Photos/V1.2.png',  // You can add your main image here
         gallery: [
             'Photos/v1-2-front.jpg',    // Add front view
             'Photos/v1-2-back.jpg'      // Add back view
@@ -284,7 +284,7 @@ const products = [
         id: 3,
         name: 'V2.1 T-Shirt',
         price: 400.00,
-        image: 'Photos/v2-1-main.jpg',  // You can add your main image here
+        image: 'Photos/V2.1.png',  // You can add your main image here
         gallery: [
             'Photos/v2-1-front.jpg',    // Add front view
             'Photos/v2-1-back.jpg',     // Add back view
@@ -297,7 +297,7 @@ const products = [
         id: 4,
         name: 'V2.2 T-Shirt',
         price: 350.00,
-        image: 'Photos/v2-2-main.jpg',  // You can add your main image here
+        image: 'Photos/V2.2.png',  // You can add your main image here
         gallery: [
             'Photos/v2-2-front.jpg',    // Add front view
             'Photos/v2-2-back.jpg'      // Add back view
