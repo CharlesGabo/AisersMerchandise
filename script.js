@@ -219,7 +219,7 @@ class ShoppingCart {
             });
 
             // Show success message
-            this.showNotification('"Thank you for your purchase! A confirmation email with your receipt will be sent to your email address shortly.".');
+            this.showNotification('Thank you for your purchase! A confirmation email with your receipt will be sent to your email address shortly.');
             
             // Clear cart and close modal
             this.items = [];
