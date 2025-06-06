@@ -33,6 +33,12 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="#contact">Contact</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="cart-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span id="cart-count" class="cart-count">0</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -150,6 +156,37 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary" id="confirm-checkout">Confirm Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content bg-dark">
+                <div class="modal-header border-0">
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="gallery-container">
+                        <div class="gallery-image-container">
+                            <button class="gallery-nav-btn prev-btn" id="prevImage">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <img src="" alt="Product image" class="img-fluid" id="fullSizeImage">
+                            <button class="gallery-nav-btn next-btn" id="nextImage">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="gallery-info">
+                            <h3 id="galleryTitle" class="text-white mb-3"></h3>
+                            <p id="galleryDescription" class="text-white-50"></p>
+                            <div class="gallery-thumbnails" id="galleryThumbnails">
+                                <!-- Thumbnails will be added dynamically -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

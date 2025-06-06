@@ -475,17 +475,21 @@ const gallery = new Gallery();
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', () => {
-    // Add cart icon to navbar
+    // Ensure cart icon exists in navbar, or add it if missing
     const navbarNav = document.querySelector('#navbarNav .navbar-nav');
-    const cartItem = document.createElement('li');
-    cartItem.className = 'nav-item';
-    cartItem.innerHTML = `
-        <a class="nav-link" href="#" id="cart-icon">
-            <i class="fas fa-shopping-cart"></i>
-            <span id="cart-count" class="cart-count">0</span>
-        </a>
-    `;
-    navbarNav.appendChild(cartItem);
+    let cartIcon = document.getElementById('cart-icon');
+    if (!cartIcon && navbarNav) {
+        const cartItem = document.createElement('li');
+        cartItem.className = 'nav-item';
+        cartItem.innerHTML = `
+            <a class="nav-link" href="#" id="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count" class="cart-count">0</span>
+            </a>
+        `;
+        navbarNav.appendChild(cartItem);
+        cartIcon = document.getElementById('cart-icon');
+    }
 
     // Initialize modals
     cart.cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
@@ -502,28 +506,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Close image modal when clicking on the image
-    document.getElementById('imageModal').addEventListener('click', (e) => {
+    document.getElementById('imageModal')?.addEventListener('click', (e) => {
         if (e.target.classList.contains('modal-body') || e.target.id === 'fullSizeImage') {
             imageModal.hide();
         }
     });
 
     // Add cart modal functionality
-    const cartIcon = document.getElementById('cart-icon');
-    cartIcon.addEventListener('click', (e) => {
-        e.preventDefault();
-        cart.renderCart();
-        cart.cartModal.show();
-    });
+    if (cartIcon) {
+        cartIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+            cart.renderCart();
+            cart.cartModal.show();
+        });
+    }
 
     // Add checkout button functionality
     const checkoutBtn = document.getElementById('checkout-btn');
-    checkoutBtn.addEventListener('click', () => {
+    checkoutBtn?.addEventListener('click', () => {
         cart.checkout();
     });
 
     // Handle checkout confirmation
-    document.getElementById('confirm-checkout').addEventListener('click', () => {
+    document.getElementById('confirm-checkout')?.addEventListener('click', () => {
         cart.processCheckout();
     });
 
@@ -572,10 +577,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update image click handlers
     document.querySelectorAll('.card').forEach(card => {
         const img = card.querySelector('.card-img-top');
-        const productId = parseInt(card.querySelector('.btn-primary').getAttribute('data-product-id'));
-        
-        img.addEventListener('click', () => {
-            gallery.show(productId);
-        });
+        const productId = parseInt(card.querySelector('.btn-primary')?.getAttribute('data-product-id'));
+        if (img && productId) {
+            img.addEventListener('click', () => {
+                gallery.show(productId);
+            });
+        }
     });
 }); 
