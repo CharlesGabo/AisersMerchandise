@@ -8,31 +8,34 @@ class ShoppingCart {
     }
 
     addItem(product) {
-        const existingItem = this.items.find(item => item.id === product.id);
+        const sizeRadio = document.querySelector(`input[name="size-${product.id}"]:checked`);
+        const size = sizeRadio ? sizeRadio.value : 'N/A';
+        
+        const existingItem = this.items.find(item => item.id === product.id && item.size === size);
         if (existingItem) {
             existingItem.quantity += 1;
         } else {
-            this.items.push({ ...product, quantity: 1 });
+            this.items.push({ ...product, quantity: 1, size: size });
         }
         this.saveCart();
         this.updateCartIcon();
         this.showNotification('Item added to cart!');
     }
 
-    removeItem(productId) {
-        this.items = this.items.filter(item => item.id !== productId);
+    removeItem(productId, size) {
+        this.items = this.items.filter(item => !(item.id === productId && item.size === size));
         this.saveCart();
         this.updateCartIcon();
         this.showNotification('Item removed from cart!');
         this.renderCart();
     }
 
-    updateQuantity(productId, quantity) {
-        const item = this.items.find(item => item.id === productId);
+    updateQuantity(productId, quantity, size) {
+        const item = this.items.find(item => item.id === productId && item.size === size);
         if (item) {
             item.quantity = Math.max(0, quantity);
             if (item.quantity === 0) {
-                this.removeItem(productId);
+                this.removeItem(productId, size);
             } else {
                 this.saveCart();
                 this.updateCartIcon();
@@ -79,15 +82,15 @@ class ShoppingCart {
                 <div class="cart-item-number" style="min-width: 2em; text-align: right; font-weight: bold; font-size: 1.1em; margin-right: 10px;">${idx + 1}.</div>
                 <img src="${item.image}" alt="${item.name}">
                 <div class="cart-item-details">
-                    <h6>${item.name}</h6>
+                    <h6>${item.name}${item.size !== 'N/A' ? ` (${item.size})` : ''}</h6>
                     <p>₱${item.price.toFixed(2)}</p>
                     <div class="cart-item-quantity">
-                        <button class="btn btn-sm btn-outline-secondary cart-qty-btn" data-action="decrement" data-id="${item.id}">-</button>
+                        <button class="btn btn-sm btn-outline-secondary cart-qty-btn" data-action="decrement" data-id="${item.id}" data-size="${item.size}">-</button>
                         <span>${item.quantity}</span>
-                        <button class="btn btn-sm btn-outline-secondary cart-qty-btn" data-action="increment" data-id="${item.id}">+</button>
+                        <button class="btn btn-sm btn-outline-secondary cart-qty-btn" data-action="increment" data-id="${item.id}" data-size="${item.size}">+</button>
                     </div>
                 </div>
-                <button class="btn btn-sm btn-danger" onclick="cart.removeItem(${item.id})">
+                <button class="btn btn-sm btn-danger" onclick="cart.removeItem(${item.id}, '${item.size}')">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
@@ -99,13 +102,14 @@ class ShoppingCart {
         cartItems.querySelectorAll('.cart-qty-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const id = parseInt(btn.getAttribute('data-id'));
+                const size = btn.getAttribute('data-size');
                 const action = btn.getAttribute('data-action');
-                const item = this.items.find(i => i.id === id);
+                const item = this.items.find(i => i.id === id && i.size === size);
                 if (!item) return;
                 if (action === 'increment') {
-                    this.updateQuantity(id, item.quantity + 1);
+                    this.updateQuantity(id, item.quantity + 1, size);
                 } else if (action === 'decrement') {
-                    this.updateQuantity(id, item.quantity - 1);
+                    this.updateQuantity(id, item.quantity - 1, size);
                 }
                 this.renderCart(); // Re-render to update UI
             });
@@ -183,7 +187,7 @@ class ShoppingCart {
             email: document.getElementById('email').value,
             paymentMode: document.querySelector('input[name="paymentMode"]:checked').value,
             gcashReference: document.getElementById('gcashReference').value,
-            items: this.items.map(item => `${item.name} (${item.quantity}x)`).join(', '),
+            items: this.items.map(item => `${item.name}${item.size !== 'N/A' ? ` (${item.size})` : ''} (${item.quantity}x)`).join(', '),
             total: this.getTotal().toFixed(2)
         };
 
