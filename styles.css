@@ -530,4 +530,11 @@ footer {
         opacity: 0;
         visibility: hidden;
     }
+}
+
+@media (max-width: 600px) {
+    .logo-animation img {
+        width: 60vw;
+        max-width: 90vw;
+    }
 } 
