@@ -384,7 +384,11 @@ section {
     .cart-modal .modal-footer .btn {
         flex: 1 1 0;
         min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
         white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     #cart-icon {
@@ -396,6 +400,23 @@ section {
         font-size: 0.8rem;
         padding: 0.18rem 0.45rem;
         min-width: 1.2em;
+    }
+
+    .cart-modal .modal-dialog {
+        width: 95vw;
+        max-width: 500px;
+        margin: 0.5rem auto;
+    }
+}
+
+@media (max-width: 400px) {
+    .cart-modal .modal-footer .btn {
+        font-size: 0.85rem;
+        padding-left: 0.3rem;
+        padding-right: 0.3rem;
+        padding-top: 0.4rem;
+        padding-bottom: 0.4rem;
+        letter-spacing: 0;
     }
 }
 
